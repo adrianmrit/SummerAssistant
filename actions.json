@@ -1,0 +1,60 @@
+{
+        "open in browser": {
+          "with_args": false,
+          "with_params": true,
+          "action": "open_in_browser",
+          "sudo": false
+        },
+        "open": {
+            "with_args":true,
+            "with_params": true,
+            "action": "run_command",
+            "args": {
+                "Spotify": {
+                    "command":["spotify"],
+                    "sudo": false
+                },
+                "my text editor": {
+                    "command":["atom"],
+                    "sudo": false
+                },
+                "Chrome": {
+                    "command":["google-chrome"],
+                    "sudo": false
+                },
+                "YouTube": {
+                    "command":["google-chrome", "youtube.com"],
+                    "sudo": false
+                },
+                "Facebook": {
+                    "command":["google-chrome", "facebook.com"],
+                    "sudo": false
+                }
+            }
+        },
+        "close": {
+            "with_args":true,
+            "with_params": true,
+            "action": "run_command",
+            "args": {
+                "Spotify": {
+                    "command":["killall", "spotify"],
+                    "sudo": false
+                },
+                "my text editor": {
+                    "command":["killall", "atom"],
+                    "sudo": false
+                },
+                "Chrome": {
+                    "command":["killall", "chrome"],
+                    "sudo": false
+                }
+            }
+        },
+        "search for": {
+            "with_args": false,
+            "with_params": true,
+            "action": "search_for",
+            "sudo": false
+        }
+}
