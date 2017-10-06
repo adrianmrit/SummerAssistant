@@ -5,6 +5,9 @@
           "action": "open_in_browser",
           "sudo": false
         },
+        "start": {
+          "redirect_to": "open"
+        },
         "open": {
             "with_args":true,
             "with_params": true,

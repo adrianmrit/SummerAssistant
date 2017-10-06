@@ -69,7 +69,9 @@ class CustomAssistant():
         self.analice_text(event.args["text"])
         if self.command in self.actions.keys():
             action = self.actions[self.command]
-            if self.actions[self.command]["with_args"]:
+            if "redirect_to" in action:
+                action = self.actions[action["redirect_to"]]
+            if action["with_args"]:
                 try:
                     self.params = action["args"][self.arg]["command"]
                     print(self.params)
