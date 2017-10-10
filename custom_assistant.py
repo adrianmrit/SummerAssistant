@@ -3,8 +3,8 @@ import subprocess
 import json
 from urllib import request as urllib
 import traceback
-
-
+import pexpect
+import atexit
 """ Add custom commands for google assistant
     If success there won't be feedback from google asssistant
     Anyways, CustomAssistant has a function called _feedback which can be used to play an audio feedback
@@ -17,6 +17,7 @@ class CustomAssistant():
         self.arg = None
         self.command = None
         self.assistant = assistant
+        self.playshell = pexpect.spawn("mpsyt")
         with open("config.json", "r") as f:
             self.config = json.load(f)
         pygame.mixer.init()
@@ -41,7 +42,6 @@ class CustomAssistant():
     def run_command(self, sudo=None):  # run params
         self.add_sudo(self.params, sudo)
         subprocess.Popen(self.params, shell=False)
-        self._feedback()
     """Open in browser
     """
     def open_in_browser(self, sudo=None):  # run params
@@ -63,6 +63,20 @@ class CustomAssistant():
                 self.command = action
                 break
         self.arg = text.replace("{} ".format(self.command), "")
+
+    def play_music(self, sudo=None):
+        self.playshell.sendline('/' + self.params[0])
+        self.playshell.sendline("all")
+
+    def next_song(self, sudo=None):
+        self.playshell.sendline('>')
+
+    def previous_song(self, sudo=None):
+        self.playshell.sendline('<')
+
+    def stop_music(self, sudo=None):
+        self.playshell.close()
+        self.playshell = pexpect.spawn("mpsyt")
     """Call the right function with parameters according to what user said.
     """
     def process(self, event):
@@ -71,18 +85,17 @@ class CustomAssistant():
             action = self.actions[self.command]
             if "redirect_to" in action:
                 action = self.actions[action["redirect_to"]]
-            if action["with_args"]:
-                try:
+            try:
+                if action["with_args"]:
                     self.params = action["args"][self.arg]["command"]
-                    print(self.params)
                     self.__getattribute__(action["action"])(action["args"][self.arg]["sudo"])
-                    self.assistant.stop_conversation()
-                except:
-                    traceback.print_exc()
-            else:
-                try:
+                else:
                     self.params = [self.arg]
                     self.__getattribute__(action["action"])(action["sudo"])
-                    self.assistant.stop_conversation()
-                except:
-                    traceback.print_exc()
+                self.assistant.stop_conversation()
+            except:
+                traceback.print_exc()
+    def exit(self):
+        self.playshell.close()
+    def at_exit(self):
+        atexit.register(self.exit)

@@ -5,6 +5,30 @@
           "action": "open_in_browser",
           "sudo": false
         },
+        "play": {
+          "with_args": false,
+          "with_params": true,
+          "action": "play_music",
+          "sudo": false
+        },
+        "next song": {
+          "with_args": false,
+          "with_params": false,
+          "action": "next_song",
+          "sudo": false
+        },
+        "previous song": {
+          "with_args": false,
+          "with_params": false,
+          "action": "previous_song",
+          "sudo": false
+        },
+        "stop music": {
+          "with_args": false,
+          "with_params": false,
+          "action": "stop_music",
+          "sudo": false
+        },
         "start": {
           "redirect_to": "open"
         },
