@@ -103,12 +103,11 @@ class CustomAssistant():
             if "redirect_to" in action:
                 action = self.actions[action["redirect_to"]]
             try:
-                if action["with_args"]:
-                    self.params = action["args"][self.arg]["command"]
-                    self.__getattribute__(action["action"])(action["args"][self.arg]["sudo"])
+                if "args" in action:
+                    self.params = action["args"]
                 else:
                     self.params = [self.arg]
-                    self.__getattribute__(action["action"])(action["sudo"])
+                self.__getattribute__(action["action"])(action["sudo"])
                 self.clean()
                 self.assistant.stop_conversation()
                 self._feedback()
