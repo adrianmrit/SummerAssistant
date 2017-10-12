@@ -11,6 +11,9 @@
           "action": "play_music",
           "sudo": false
         },
+        "pause": {
+            "redirect_to": "stop music"
+        },
         "next song": {
           "with_args": false,
           "with_params": false,

@@ -12,6 +12,8 @@ from custom_assistant import CustomAssistant
 
 def process_event(event, assistant, custom_assistant):
     if event.type == EventType.ON_CONVERSATION_TURN_STARTED:
+        custom_assistant.before_do()
+        custom_assistant._feedback()
         print()
     if event.type == EventType.ON_RECOGNIZING_SPEECH_FINISHED:
         custom_assistant.process(event)
@@ -19,6 +21,7 @@ def process_event(event, assistant, custom_assistant):
 
     if (event.type == EventType.ON_CONVERSATION_TURN_FINISHED and
             event.args and not event.args['with_follow_on_turn']):
+        custom_assistant.after_do()
         print()
 
 

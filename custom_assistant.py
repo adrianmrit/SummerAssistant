@@ -18,13 +18,17 @@ class CustomAssistant():
         self.command = None
         self.assistant = assistant
         self.playshell = pexpect.spawn("mpsyt")
+        self.playing_music = False
         with open("config.json", "r") as f:
             self.config = json.load(f)
         pygame.mixer.init()
         pygame.mixer.music.load(self.config["audio_feedback"])
         with open("actions.json", "r") as f:
             self.actions = json.load(f)
-
+    def clean(self):
+        self.params = None
+        self.arg = None
+        self.command = None
     def _feedback(self):
         pygame.mixer.music.play()
     """Add sudo to parameters
@@ -65,18 +69,31 @@ class CustomAssistant():
         self.arg = text.replace("{} ".format(self.command), "")
 
     def play_music(self, sudo=None):
-        self.playshell.sendline('/' + self.params[0])
-        self.playshell.sendline("all")
-
+        if self.params[0] == "":
+            self.playshell.send(" ")
+        else:
+            self.playshell.sendline('/' + self.params[0])
+            self.playshell.sendline("all")
+            self.playshell.send(' ')
+        self.playing_music = True
     def next_song(self, sudo=None):
-        self.playshell.sendline('>')
+        self.playshell.send('>')
+        self.playing_music = True
 
     def previous_song(self, sudo=None):
-        self.playshell.sendline('<')
+        self.playshell.send('<')
+        self.playing_music = True
 
     def stop_music(self, sudo=None):
-        self.playshell.close()
-        self.playshell = pexpect.spawn("mpsyt")
+        if self.playing_music:
+            self.playshell.send(' ')
+            self.playing_music = False
+    def before_do(self):
+        if self.playing_music:
+            self.playshell.send(' ')
+    def after_do(self):
+        if self.playing_music:
+            self.playshell.send(' ')
     """Call the right function with parameters according to what user said.
     """
     def process(self, event):
@@ -92,10 +109,13 @@ class CustomAssistant():
                 else:
                     self.params = [self.arg]
                     self.__getattribute__(action["action"])(action["sudo"])
+                self.clean()
                 self.assistant.stop_conversation()
+                self._feedback()
+                print("CUSTOM ACTION")
             except:
                 traceback.print_exc()
     def exit(self):
         self.playshell.close()
     def at_exit(self):
-        atexit.register(self.exit)
+        atexit.register(self)
