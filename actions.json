@@ -25,7 +25,7 @@
         "start": {
           "redirect_to": "open"
         },
-        "open Spotify": {
+        "open spotify": {
           "action": "run_command",
           "args": ["spotify"],
           "sudo": false
@@ -35,22 +35,22 @@
           "args": ["atom"],
           "sudo": false
         },
-        "open Chrome": {
+        "open chrome": {
           "action": "run_command",
           "args": ["google-chrome"],
           "sudo": false
         },
-        "open YouTube": {
+        "open youtube": {
           "action": "run_command",
           "args": ["google-chrome", "youtube.com"],
           "sudo": false
         },
-        "open Facebook": {
+        "open facebook": {
           "action": "run_command",
           "args": ["google-chrome", "facebook.com"],
           "sudo": false
         },
-        "close Spotify": {
+        "close spotify": {
           "action": "run_command",
           "args": ["killall", "spotify"],
           "sudo": false
@@ -60,7 +60,7 @@
           "args": ["killall", "atom"],
           "sudo": false
         },
-        "close Chrome": {
+        "close chrome": {
           "action": "run_command",
           "args": ["killall", "google-chrome"],
           "sudo": false

@@ -19,6 +19,7 @@ class CustomAssistant():
         self.assistant = assistant
         self.playshell = pexpect.spawn("mpsyt")
         self.playing_music = False
+        self.music_paused = False
         with open("config.json", "r") as f:
             self.config = json.load(f)
         pygame.mixer.init()
@@ -69,7 +70,7 @@ class CustomAssistant():
         self.arg = text.replace("{} ".format(self.command), "")
 
     def play_music(self, sudo=None):
-        if self.params[0] == "":
+        if self.params[0] == "" and self.music_paused:
             self.playshell.send(" ")
         else:
             self.playshell.sendline('/' + self.params[0])
@@ -78,26 +79,28 @@ class CustomAssistant():
         self.playing_music = True
     def next_song(self, sudo=None):
         self.playshell.send('>')
+        self.playshell.send(' ')
         self.playing_music = True
 
     def previous_song(self, sudo=None):
         self.playshell.send('<')
+        self.playshell.send(' ')
         self.playing_music = True
 
     def stop_music(self, sudo=None):
         if self.playing_music:
-            self.playshell.send(' ')
             self.playing_music = False
+            self.music_paused = True
     def before_do(self):
         if self.playing_music:
             self.playshell.send(' ')
     def after_do(self):
-        if self.playing_music:
+        if self.playing_music and not self.music_paused:
             self.playshell.send(' ')
     """Call the right function with parameters according to what user said.
     """
     def process(self, event):
-        self.analice_text(event.args["text"])
+        self.analice_text(event.args["text"].lower())
         if self.command in self.actions.keys():
             action = self.actions[self.command]
             if "redirect_to" in action:
