@@ -26,7 +26,7 @@ The config.json file is very intuitive.
 
 	* "search_query" is the query used by your favorite search engine to search in the web.
 
-	* "audio_feedback" is the address of the mp3 file that will be reproduced after each successfull acion.
+	* "audio_feedback" is the address of the mp3 file that will be reproduced after each successfull action.
 
 **Dependencies:**
 
@@ -44,9 +44,10 @@ The config.json file is very intuitive.
 
 **Known bugs:**
 
-	* Music from youtube will keep playing after exit google assistant with CTRL-Z, please use CTRL-C instead
+	* Music from youtube will keep playing after exit google assistant with CTRL-Z, please use CTRL-C instead.
+	If by mistake you didn't do this just use:
 
-	* After play music the audio output from the assistant will stop working
+		killall mpsyt
 
 **Why Summer assistant:**
 
