@@ -8,7 +8,7 @@ from google.assistant.library import Assistant
 from google.assistant.library.event import EventType
 from google.assistant.library.file_helpers import existing_file
 from custom_assistant import CustomAssistant
-
+import settings
 
 def process_event(event, assistant, custom_assistant):
     if event.type == EventType.ON_CONVERSATION_TURN_STARTED:

@@ -9,7 +9,7 @@ import atexit
     If success there won't be feedback from google asssistant
     Anyways, CustomAssistant has a function called _feedback which can be used to play an audio feedback
 """
-
+import settings
 
 class CustomAssistant():
     def __init__(self, assistant):
@@ -20,12 +20,8 @@ class CustomAssistant():
         self.playshell = pexpect.spawn("mpsyt")
         self.playing_music = False
         self.music_paused = False
-        with open("config.json", "r") as f:
-            self.config = json.load(f)
         pygame.mixer.init()
-        pygame.mixer.music.load(self.config["audio_feedback"])
-        with open("actions.json", "r") as f:
-            self.actions = json.load(f)
+        pygame.mixer.music.load(settings.audio_feedback)
     def clean(self):
         self.params = None
         self.arg = None
@@ -50,14 +46,14 @@ class CustomAssistant():
     """Open in browser
     """
     def open_in_browser(self, sudo=None):  # run params
-        self.params.insert(0, self.config["browser"])
+        self.params.insert(0, settings.browser)
         self.add_sudo(self.params, sudo)
         subprocess.Popen(self.params, shell=False)
     """Search for a frase using the search_query defined in config.json
     """
     def search_for(self, sudo=None):
-        self.params.insert(0, self.config["browser"])
-        self.params[1] = self.config["search_query"].format(urllib.quote(self.params[1]))
+        self.params.insert(0, settings.browser)
+        self.params[1] = settings["search_query"].format(urllib.quote(self.params[1]))
         self.add_sudo(self.params, sudo)
         subprocess.Popen(self.params, shell=False)
     """Break user's phrase in command and argument
