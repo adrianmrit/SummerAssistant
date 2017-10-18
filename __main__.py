@@ -43,7 +43,6 @@ def main():
 
     with Assistant(credentials) as assistant:
         custom_assistant = CustomAssistant(assistant)
-        custom_assistant._feedback()
         for event in assistant.start():
             process_event(event, assistant, custom_assistant)
 

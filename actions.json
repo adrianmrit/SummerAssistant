@@ -1,72 +1,46 @@
 {
-        "open in browser": {
+        "^open (?P<url>.*?) in browser$": {
           "action": "open_in_browser",
-          "sudo": false
+          "response_success": "I opened <url> in your browser",
+          "response_error": "I couldn't open <url> in the browser",
+          "cache_response": true
         },
-        "play": {
+        "^play (?P<query>.*?)$": {
           "action": "play_music",
-          "sudo": false
+          "response_error": "I couldn't play <query>",
+          "cache_response": true
         },
-        "pause": {
-          "redirect_to": "stop music"
+        "^play$": {
+          "action": "play_music",
+          "response_error": "I couldn't play music",
+          "cache_response": true
         },
-        "next song": {
-          "action": "next_song",
-          "sudo": false
+        "^next song$": {
+          "action": "next_song"
         },
-        "previous song": {
-          "action": "previous_song",
-          "sudo": false
+        "^previous song$": {
+          "action": "previous_song"
         },
-        "stop music": {
-          "action": "stop_music",
-          "sudo": false
+        "^stop music": {
+          "action": "stop_music"
         },
-        "start": {
-          "redirect_to": "open"
-        },
-        "open spotify": {
+        "^open (?P<command>.+?)$": {
           "action": "run_command",
-          "args": ["spotify"],
-          "sudo": false
+          "response_success": "I opened <command>",
+          "response_error": "I couldn't open <command>",
+          "cache_response": true
         },
-        "open my text editor": {
+        "^close (?P<command>.*?)$": {
+          "additional_args": ["close"],
           "action": "run_command",
-          "args": ["atom"],
-          "sudo": false
+          "response_success": "I closed <command>",
+          "response_error": "I couldn't close <command>",
+          "cache_response": true
         },
-        "open chrome": {
-          "action": "run_command",
-          "args": ["google-chrome"],
-          "sudo": false
-        },
-        "open youtube": {
-          "action": "run_command",
-          "args": ["google-chrome", "youtube.com"],
-          "sudo": false
-        },
-        "open facebook": {
-          "action": "run_command",
-          "args": ["google-chrome", "facebook.com"],
-          "sudo": false
-        },
-        "close spotify": {
-          "action": "run_command",
-          "args": ["killall", "spotify"],
-          "sudo": false
-        },
-        "close my text editor": {
-          "action": "run_command",
-          "args": ["killall", "atom"],
-          "sudo": false
-        },
-        "close chrome": {
-          "action": "run_command",
-          "args": ["killall", "google-chrome"],
-          "sudo": false
-        },
-        "search for": {
+        "^search for (?P<query>.*?)$": {
           "action": "search_for",
-          "sudo": false
+          "response_success": "Showing search results for <query> in browser",
+          "response_error": "I couldn't search for <query>",
+          "cache_response": true
         }
 }
