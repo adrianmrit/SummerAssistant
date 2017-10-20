@@ -7,6 +7,10 @@ Install mps-youtube directly from the repository:
 
 	sudo pip3 install -U git+https://github.com/mps-youtube/mps-youtube.git
 
+Install youtube_dl
+
+	sudo pip3 install youtube_dl
+
 Set mpv as the player for mps-youtube:
 
 	mpsyt set player mpv, set playerargs ,exit
