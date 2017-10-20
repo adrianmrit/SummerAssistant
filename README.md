@@ -28,7 +28,7 @@ The settings.py file is very intuitive.
 
 **New commands:**
 
-When a user says somethings the assistant will try if the speech match an existent pattern. You can create this patterns using regular expressions in the file actions.json. For example:
+When a user says somethings the assistant will check if the speech match an existent pattern. You can create this patterns using regular expressions in the file actions.json. For example:
 
 		"^open (?P<url>.*?) in browser$": {
 			"action": "open_in_browser",
@@ -58,6 +58,30 @@ and
 		"do (?P<something>.*?) here)"
 
 "do my homework here" will match the first pattern.
+
+**Dictionary:**
+
+If you have this in dictionary.json:
+
+	{
+	  "command":{
+	    "chrome": "google-chrome"
+	  }
+	}
+
+And this action:
+
+	"^open (?P<command>.+?)$": {
+		"action": "run_command",
+		"response_success": "I opened <command>",
+		"response_error": "I couldn't open <command>",
+		"cache_response": true
+	},
+
+If user says: "open chrome" the dictionary passed to the function will look like this:
+
+	{"command": "google-chrome"}
+
 **Dependencies:**
 
 	* Python 3.4
