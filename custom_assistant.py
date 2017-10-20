@@ -84,13 +84,14 @@ class CustomAssistant():
                 break
 
     def play_music(self):
-        if not self.args["query"] in self.args and self.music_paused:
-            self.playshell.send(" ")
+        if not "query" in self.args and self.music_paused:
             self.music_paused = False
         else:
+            if self.playing_music:
+                self.playshell.sendcontrol("c")
             self.playshell.sendline('/' + self.args["query"])
             self.playshell.sendline("all")
-        self.playshell.sendline(" ")
+            self.playshell.send(" ")
         self.playing_music = True
     def next_song(self):
         self.playshell.send('>')
