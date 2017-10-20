@@ -22,6 +22,7 @@ class CustomAssistant():
         self.playshell = pexpect.spawn("mpsyt")
         self.playing_music = False
         self.music_paused = False
+        self.delete_file = None
         tts = gTTS(text=settings.wellcome_txt, lang='en')
         if os.path.isfile("responses/wellcome.mp3"):
             pass
@@ -34,8 +35,11 @@ class CustomAssistant():
         subprocess.Popen(["mpv", "responses/wellcome.mp3"])
     def clean(self):
         self.args = None
+        print("args cleaned")
         self.action = None
+        print("action cleaned")
         self.function = None
+        print("function cleaned")
     def _feedback(self):
         subprocess.Popen(["mpv", settings.audio_feedback], shell=False)
     """Run a command using parameters.
@@ -49,11 +53,9 @@ class CustomAssistant():
         if "close" in self.args:
             if self.args["command"] == "google-chrome":
                 self.args["command"] = "chrome"
-            # subprocess.Popen(["killall", self.args["command"]], shell=False)
-            subprocess.Popen("killall {}".format(self.args["command"]))
+            subprocess.Popen(["killall", self.args["command"]], shell=False)
         else:
-            # subprocess.Popen([self.args["command"]], shell=False)
-            subprocess.Popen("gnome-terminal -e {}".format(self.args["command"]))
+            subprocess.Popen([self.args["command"]], shell=False)
     """Open in browser
     """
     def open_in_browser(self):  # run params
@@ -70,7 +72,7 @@ class CustomAssistant():
             regex = re.compile(action)
             m = regex.search(text)
             if m:
-                self.action = self.actions[action]
+                self.action = self.actions[action].copy()
                 self.args = m.groupdict()
                 for key in self.args.keys():
                     if key in self.dictionary:
@@ -80,6 +82,7 @@ class CustomAssistant():
                 if "additional_args" in self.action:
                     for arg in self.action["additional_args"]:
                         self.args.update({arg:True})
+                print(self.action)
                 print(self.args)
                 break
 
@@ -108,6 +111,9 @@ class CustomAssistant():
             self.playing_music = False
             self.music_paused = True
     def before_do(self):
+        if self.delete_file:
+            os.remove(self.delete_file)
+            self.delete_file = None
         if self.playing_music and not self.music_paused:
             self.playshell.send(' ')
     def after_do(self):
@@ -115,7 +121,8 @@ class CustomAssistant():
             self.playshell.send(' ')
     """Call the right function with parameters according to what user said.
     """
-    def play_response(self, event, cache=True, error=False):
+    def play_response(self, event, cache=False, error=False):
+        print(self.args)
         if error:
             for key in self.args.keys():
                 try:
@@ -141,7 +148,7 @@ class CustomAssistant():
         else:
             tts.save(file_name)
             subprocess.Popen(["mpv", file_name], shell=False)
-            os.remove(file_name)
+            self.delete_file = file_name
     def no_action(self):
         pass
     def process(self, event):
@@ -150,7 +157,7 @@ class CustomAssistant():
             self.__getattribute__(self.action["action"])()
             self.assistant.stop_conversation()
             if self.action and "response_success" in self.action:
-                if  self.action["cache_response"]:
+                if "cache_response" in self.action and self.action["cache_response"]:
                     cache = True
                 else:
                     cache = False
@@ -161,7 +168,7 @@ class CustomAssistant():
             print("CUSTOM ACTION")
         except:
             if self.action and "response_error" in self.action:
-                if  self.action["cache_response"]:
+                if "cache_response" in self.action and self.action["cache_response"]:
                     cache = True
                 else:
                     cache = False
@@ -171,7 +178,7 @@ class CustomAssistant():
                 self._feedback()
             self.clean()
             traceback.print_exc()
-        print(self.args)
+        print(self.actions)
     def exit(self):
         self.playshell.close()
     def at_exit(self):
