@@ -49,10 +49,11 @@ class CustomAssistant():
         if "close" in self.args:
             if self.args["command"] == "google-chrome":
                 self.args["command"] = "chrome"
-            subprocess.Popen(["killall", self.args["command"]], shell=False)
-            print ("google-chrome closed")
+            # subprocess.Popen(["killall", self.args["command"]], shell=False)
+            subprocess.Popen("killall {}".format(self.args["command"]))
         else:
-            subprocess.Popen([self.args["command"]], shell=False)
+            # subprocess.Popen([self.args["command"]], shell=False)
+            subprocess.Popen("gnome-terminal -e {}".format(self.args["command"]))
     """Open in browser
     """
     def open_in_browser(self):  # run params
@@ -83,12 +84,13 @@ class CustomAssistant():
                 break
 
     def play_music(self):
-        if not self.args["query"] and self.music_paused:
+        if not self.args["query"] in self.args and self.music_paused:
             self.playshell.send(" ")
+            self.music_paused = False
         else:
             self.playshell.sendline('/' + self.args["query"])
             self.playshell.sendline("all")
-            self.playshell.send(' ')
+        self.playshell.sendline(" ")
         self.playing_music = True
     def next_song(self):
         self.playshell.send('>')
@@ -105,7 +107,7 @@ class CustomAssistant():
             self.playing_music = False
             self.music_paused = True
     def before_do(self):
-        if self.playing_music:
+        if self.playing_music and not self.music_paused:
             self.playshell.send(' ')
     def after_do(self):
         if self.playing_music and not self.music_paused:
