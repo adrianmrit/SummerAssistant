@@ -28,7 +28,7 @@ The settings.py file is very intuitive.
 
 **New commands:**
 
-	When a user says somethings the assistant will try if the speech match an existent pattern. You can create this patterns using regular expressions in the file actions.json. For example:
+When a user says somethings the assistant will try if the speech match an existent pattern. You can create this patterns using regular expressions in the file actions.json. For example:
 
 		"^open (?P<url>.*?) in browser$": {
 			"action": "open_in_browser",
@@ -37,27 +37,27 @@ The settings.py file is very intuitive.
 			"cache_response": true
 		}
 
-	The first part is the regular expression. If user says "open github.com in the browser" it will run a function called open_in_browser and pass a dictionary of values like this:
+The first part is the regular expression. If user says "open github.com in the browser" it will run a function called open_in_browser and pass a dictionary of values like this:
 
 		{"url": "github.com"}
 
-	If the function don't return with any error the response_success will be the answer of the assistant, otherwise response_error will be the answer.
+If the function don't return with any error the response_success will be the answer of the assistant, otherwise response_error will be the answer.
 
-	If "cache_response" is true a mp3 file with the answer for that action will be saved so it doesn't have to downloadit again. This might be deleted in a future because it can create many files if you use many different commands.
+If "cache_response" is true a mp3 file with the answer for that action will be saved so it doesn't have to downloadit again. This might be deleted in a future because it can create many files if you use many different commands.
 
-	You can also pass more args to the function by using:
+You can also pass more args to the function by using:
 	"additional_args": ["close"],
-	This will add {"close": True} to the dictionary passed to the function.
+This will add {"close": True} to the dictionary passed to the function.
 
-	Commands should be created in an order where they won't conflict with other commands. For example, if you have:
+Commands should be created in an order where they won't conflict with other commands. For example, if you have:
 
 	 	"do (?P<something>.*?) (?P<here>.*?)"
 
-	and
+and
 
 		"do (?P<something>.*?) here)"
 
-	"do my homework here" will match the first pattern.
+"do my homework here" will match the first pattern.
 **Dependencies:**
 
 	* Python 3.4
@@ -74,8 +74,8 @@ The settings.py file is very intuitive.
 
 **Known bugs:**
 
-	* Music from youtube will keep playing after exit google assistant with CTRL-Z, please use CTRL-C instead.
-	If by mistake you didn't do this just use:
+Music from youtube will keep playing after exit google assistant with CTRL-Z, please use CTRL-C instead.
+If by mistake you didn't do this just use:
 
 		killall mpsyt
 
