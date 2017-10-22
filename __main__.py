@@ -12,16 +12,16 @@ import settings
 
 def process_event(event, assistant, custom_assistant):
     if event.type == EventType.ON_CONVERSATION_TURN_STARTED:
-        custom_assistant.before_do()
-        custom_assistant._feedback()
+        custom_assistant.before_do()  # do something before process the event
+        custom_assistant._feedback()  # audio_feedback
         print()
     if event.type == EventType.ON_RECOGNIZING_SPEECH_FINISHED:
-        custom_assistant.process(event)
+        custom_assistant.process(event)  # process the event with the custom_assistant
     print(event)
 
     if (event.type == EventType.ON_CONVERSATION_TURN_FINISHED and
             event.args and not event.args['with_follow_on_turn']):
-        custom_assistant.after_do()
+        custom_assistant.after_do()  # do something after process the event
         print()
 
 
@@ -42,9 +42,9 @@ def main():
                                                             **json.load(f))
 
     with Assistant(credentials) as assistant:
-        custom_assistant = CustomAssistant(assistant)
+        custom_assistant = CustomAssistant(assistant)  # load the assistant
         for event in assistant.start():
-            process_event(event, assistant, custom_assistant)
+            process_event(event, assistant, custom_assistant)  # process the event
 
 
 if __name__ == '__main__':
