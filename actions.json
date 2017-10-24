@@ -28,7 +28,7 @@
           "response_error": "I couldn't open <command>"
         },
         "^close (?P<command>.*?)$": {
-          "additional_args": ["close"],
+          "additional_args": [["close",true]],
           "action": "run_command",
           "response_success": "I closed <command>",
           "response_error": "I couldn't close <command>"

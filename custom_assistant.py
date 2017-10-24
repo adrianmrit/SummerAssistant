@@ -97,7 +97,7 @@ class CustomAssistant():
 
                 if "additional_args" in self.action:
                     for arg in self.action["additional_args"]:
-                        self.args.update({arg:True})
+                        self.args.update({arg[0]:arg[1]})
                 break
 
     """Search for something in mpsyt and play all the results
