@@ -147,33 +147,33 @@ class CustomAssistant():
 
     """If there is a success or error response for the action the assistant will talk the corresponding one
     """
-    def play_response(self, event, cache=False, error=False):
+    def play_response(self, filename, error=False):
         if error:
-            for key in self.args.keys():
-                try:
-                    self.action["response_error"] = self.action["response_error"].replace("<{key}>".format(key=key), self.args[key])
-                except TypeError:
-                    pass
-            tts = gTTS(text=self.action["response_error"], lang='en')
-            file_name = "responses/{file_name}_error.mp3".format(file_name=event.args["text"].lower().replace(" ", "_"))
+            response = "response_error"
         else:
+            response = "response_success"
+        if response in self.action:
             for key in self.args.keys():
                 try:
-                    self.action["response_success"] = self.action["response_success"].replace("<{key}>".format(key=key), self.args[key])
+                    self.action[response] = self.action[response].replace("<{key}>".format(key=key), self.args[key])
                 except TypeError:
                     pass
-            tts = gTTS(text=self.action["response_success"], lang='en')
-            file_name = "responses/{file_name}.mp3".format(file_name=event.args["text"].lower().replace(" ", "_"))
-        if cache:
-            if os.path.isfile(file_name):
-                pass
+            tts = gTTS(text=self.action[response], lang='en')
+            file_name = "responses/{file_name}_{response}.mp3".format(file_name=filename.replace(" ", "_"), response=response)
+            if "cache_response" in self.action and self.action["cache_response"]:
+                if os.path.isfile(file_name):
+                    pass
+                else:
+                    tts.save(file_name)
+                subprocess.Popen(["mpv", file_name], stdout=self.FNULL, shell=False)
             else:
                 tts.save(file_name)
-            subprocess.Popen(["mpv", file_name], stdout=self.FNULL, shell=False)
+                subprocess.Popen(["mpv", file_name], stdout=self.FNULL, shell=False)
+                self.delete_file = file_name
+        elif not error:
+            self._feedback()
         else:
-            tts.save(file_name)
-            subprocess.Popen(["mpv", file_name], stdout=self.FNULL, shell=False)
-            self.delete_file = file_name
+            pass
 
     """The most useless function in the world"""
     def no_action(self):
@@ -184,34 +184,19 @@ class CustomAssistant():
        the default response from the assistant will be ignored, the action
        executed with the parameters and the sound feedback or success/error response played
     """
-    def process(self, event):
-        self.analice_text(event.args["text"].lower())
+    def process(self, text):
+        self.analice_text(text)
         try:
             self.__getattribute__(self.action["action"])() # this will call the function
-            self.assistant.stop_conversation()
-            if self.action and "response_success" in self.action:
-                if "cache_response" in self.action and self.action["cache_response"]:
-                    cache = True
-                else:
-                    cache = False
-                self.play_response(event, cache=cache)
-            else:
-                self._feedback()
-            self.clean()  # clean vars
             print("CUSTOM ACTION")
+            error = False
         except:
-            if self.action and "response_error" in self.action:
-                if "cache_response" in self.action and self.action["cache_response"]:
-                    cache = True
-                else:
-                    cache = False
-                self.assistant.stop_conversation()
-                self.play_response(event, cache=cache, error=True)
-            elif self.action:
-                self._feedback()
-            self.clean()
+            error = True
             traceback.print_exc()
-
+        if self.action:
+            self.assistant.stop_conversation()
+            self.play_response(text, error=error)
+        self.clean()
     """What to do before exit"""
     def exit(self):
         self.playshell.close()

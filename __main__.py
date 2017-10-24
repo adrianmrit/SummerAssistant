@@ -16,7 +16,7 @@ def process_event(event, assistant, custom_assistant):
         custom_assistant._feedback()  # audio_feedback
         print()
     if event.type == EventType.ON_RECOGNIZING_SPEECH_FINISHED:
-        custom_assistant.process(event)  # process the event with the custom_assistant
+        custom_assistant.process(event.args["text"].lower())  # process the event with the custom_assistant
     print(event)
 
     if (event.type == EventType.ON_CONVERSATION_TURN_FINISHED and
