@@ -7,6 +7,10 @@ import atexit
 from gtts import gTTS
 import os
 import re
+import helpers
+import getpass
+from actions import actions
+from dictionary import dictionary
 """ Add custom commands for google assistant
     If success there won't be feedback from google asssistant
     Anyways, CustomAssistant has a function called _feedback which can be used to play an audio feedback
@@ -24,17 +28,13 @@ class CustomAssistant():
         self.music_paused = False
         self.delete_file = None
         self.FNULL = open(os.devnull, 'w')  # needed to avoid output from subprocess.Popen
-
+        self.user = getpass.getuser()
         # says wellcome message when the assistant starts
         tts = gTTS(text=settings.wellcome_txt, lang='en')
         if os.path.isfile("responses/wellcome.mp3"):
             pass
         else:
             tts.save("responses/wellcome.mp3")
-        with open("actions.json", "r") as f:
-            self.actions = json.load(f)
-        with open("dictionary.json", "r") as f:
-            self.dictionary = json.load(f)
         subprocess.Popen(["mpv", "responses/wellcome.mp3"], stdout=self.FNULL, shell=False)
 
     """Reset some values
@@ -59,10 +59,11 @@ class CustomAssistant():
         if "close" in self.args:
             if self.args["command"] == "google-chrome":
                 self.args["command"] = "chrome"
-            subprocess.Popen(["killall", self.args["command"]], stdout=self.FNULL, shell=False)
+            command = helpers.append_helper(["killall"], self.args["command"])
+            subprocess.Popen(command, stdout=self.FNULL, shell=False)
         else:
-            subprocess.Popen([self.args["command"]], stdout=self.FNULL, shell=False)
-
+            command = helpers.append_helper([], self.args["command"])
+            subprocess.Popen(command, stdout=self.FNULL, shell=False)
     """Open <url> in browser
     """
     def open_in_browser(self):  # run params
@@ -80,25 +81,26 @@ class CustomAssistant():
        and then start to process
     """
     def analice_text(self, text):
-        for action in self.actions.keys():
+        for action in actions.keys():
             regex = re.compile(action)
             m = regex.search(text)
             if m:  # if there was a match
-                self.action = self.actions[action].copy()  # copy the action so the original dictionary is not modificated by accident
+                self.action = actions[action].copy()  # copy the action so the original dictionary is not modificated by accident
                 self.args = m.groupdict()  # get all variables from the speech
 
-                # check if a variable has a value in dictionary.json
+                # check if a variable has a value in dictionary.py
                 # if there is a match the value of the variable will be changed for the one in the dictionary
                 for key in self.args.keys():
-                    if key in self.dictionary:
-                        for word in self.dictionary[key].keys():
+                    if key in dictionary:
+                        for word in dictionary[key].keys():
                             if self.args[key] == word:
-                                self.args[key] = self.dictionary[key][word]
+                                self.args[key] = dictionary[key][word]
 
                 if "additional_args" in self.action:
                     for arg in self.action["additional_args"]:
                         self.args.update({arg[0]:arg[1]})
                 break
+        print(self.args)
 
     """Search for something in mpsyt and play all the results
     """
@@ -200,6 +202,7 @@ class CustomAssistant():
     """What to do before exit"""
     def exit(self):
         self.playshell.close()
+        os.remove(self.delete_file)
 
     """Register exit function"""
     def at_exit(self):
