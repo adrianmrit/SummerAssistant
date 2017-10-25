@@ -32,7 +32,7 @@ The settings.py file is very intuitive.
 
 **New commands:**
 
-When a user says somethings the assistant will check if the speech match an existent pattern. You can create this patterns using regular expressions in the file actions.json. For example:
+When a user says somethings the assistant will check if the speech match an existent pattern. You can create this patterns using regular expressions in the file actions.py. For example:
 
 		"^open (?P<url>.*?) in browser$": {
 			"action": "open_in_browser",
@@ -50,12 +50,12 @@ If the function don't return with any error the response_success will be the ans
 If "cache_response" is true a mp3 file with the answer for that action will be saved so it doesn't have to downloadit again. This might be deleted in a future because it can create many files if you use many different commands.
 
 You can also pass more args to the function by using:
-	"additional_args": ["close"],
-This will add {"close": True} to the dictionary passed to the function.
+	"additional_args": [["arg","value"]],
+This will add {"arg": "value"} to the dictionary passed to the function.
 
 Commands should be created in an order where they won't conflict with other commands. For example, if you have:
 
-	 	"do (?P<something>.*?) (?P<here>.*?)"
+	 	"do (?P<something>.*?) (?P<where>.*?)"
 
 and
 
@@ -65,7 +65,7 @@ and
 
 **Dictionary:**
 
-If you have this in dictionary.json:
+If you have this in dictionary.py:
 
 	{
 	  "command":{
@@ -79,7 +79,6 @@ And this action:
 		"action": "run_command",
 		"response_success": "I opened <command>",
 		"response_error": "I couldn't open <command>",
-		"cache_response": true
 	},
 
 If user says: "open chrome" the dictionary passed to the function will look like this:
