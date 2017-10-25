@@ -14,16 +14,18 @@ def process_event(event, assistant, custom_assistant):
     if event.type == EventType.ON_CONVERSATION_TURN_STARTED:
         custom_assistant.before_do()  # do something before process the event
         custom_assistant._feedback()  # audio_feedback
-        print()
+        if settings.DEBUG:
+            print()
     if event.type == EventType.ON_RECOGNIZING_SPEECH_FINISHED:
-        print(event.args["text"])
+        if settings.DEBUG:
+            print(event.args["text"])
         custom_assistant.process(event.args["text"].lower())  # process the event with the custom_assistant
-    print(event)
 
     if (event.type == EventType.ON_CONVERSATION_TURN_FINISHED and
             event.args and not event.args['with_follow_on_turn']):
         custom_assistant.after_do()  # do something after process the event
-        print()
+        if settings.DEBUG:
+            print()
 
 
 def main():

@@ -41,11 +41,12 @@ class CustomAssistant():
     """
     def clean(self):
         self.args = None
-        print("args cleaned")
         self.action = None
-        print("action cleaned")
         self.function = None
-        print("function cleaned")
+        if settings.DEBUG:
+            print("args cleaned")
+            print("action cleaned")
+            print("function cleaned")
 
     """Play audio feedback when there is no other answer
     """
@@ -100,7 +101,8 @@ class CustomAssistant():
                     for arg in self.action["additional_args"]:
                         self.args.update({arg[0]:arg[1]})
                 break
-        print(self.args)
+        if settings.DEBUG:
+            print("args: \n" + str(self.args))
 
     """Search for something in mpsyt and play all the results
     """
@@ -190,11 +192,13 @@ class CustomAssistant():
         self.analice_text(text)
         try:
             self.__getattribute__(self.action["action"])() # this will call the function
-            print("CUSTOM ACTION")
+            if settings.DEBUG:
+                print("CUSTOM ACTION")
             error = False
         except:
             error = True
-            traceback.print_exc()
+            if settings.DEBUG:
+                traceback.print_exc()
         if self.action:
             self.assistant.stop_conversation()
             self.play_response(text, error=error)
