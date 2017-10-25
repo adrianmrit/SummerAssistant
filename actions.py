@@ -1,8 +1,13 @@
 actions = {
-        "^open (?P<url>.*?) in browser$": {
-          "action": "open_in_browser",
-          "response_success": "I opened <url> in your browser",
-          "response_error": "I couldn't open <url> in the browser"
+        "^open (?P<url>.*?) in the browser$": {
+            "action": "open_in_browser",
+            "response_success": "I opened <url> in your browser",
+            "response_error": "I couldn't open <url> in the browser"
+        },
+        "^open (?P<command>.+?)$": {
+          "action": "run_command",
+          "response_success": "Working on it",
+          "response_error": "Sorry. I couldn't do it"
         },
         "^play (?P<query>.*?)$": {
           "action": "play_music",
@@ -21,11 +26,6 @@ actions = {
         },
         "^stop music": {
           "action": "stop_music"
-        },
-        "^open (?P<command>.+?)$": {
-          "action": "run_command",
-          "response_success": "Working on it",
-          "response_error": "Sorry. I couldn't do it"
         },
         "^close (?P<command>.*?)$": {
           "additional_args": [["close", True]],

@@ -68,7 +68,7 @@ class CustomAssistant():
     """Open <url> in browser
     """
     def open_in_browser(self):  # run params
-        subprocess.Popen([settings.browser, self.args["url"]], stdout=self.FNULL, shell=False)
+        subprocess.Popen(["xdg-open", "http://" + self.args["url"]], stdout=self.FNULL, shell=False)
 
     """Search for <query>
        The url for the search motor is loaded from settings.search_query
