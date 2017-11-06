@@ -76,7 +76,7 @@ class CustomAssistant():
     """
     def search_for(self):
         query = settings.search_query.format(urllib.quote(self.args["query"]))
-        subprocess.Popen([settings.browser, query], stdout=self.FNULL, shell=False)
+        subprocess.Popen(["xdg-open", query], stdout=self.FNULL, shell=False)
 
     """Try action one by one and check if the pattern match the speech
        and then start to process
